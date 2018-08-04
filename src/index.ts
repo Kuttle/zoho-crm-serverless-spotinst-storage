@@ -11,7 +11,12 @@ export interface ITokenObj {
   refresh_token: string;
 }
 
-let iGetAuthTokenResult: IGetAuthTokenResult;
+export interface IStorage {
+  saveOAuthTokens: (token_obj: ITokenObj) => Promise<void>;
+  updateOAuthTokens: (token_obj: ITokenObj) => Promise<void>;
+  getOAuthTokens(user_identifier: string): Promise<IGetAuthTokenResult[]>;
+}
+
 const oauthKey = 'oauthKey';
 export function init(
   context,
@@ -20,7 +25,7 @@ export function init(
   environment: string
 ) {
   const _context = context;
-  function postStore(key: string, value: string): Promise<any> {
+  function postStore(key: string, value: string): Promise<IStorage> {
     return rp({
       uri:
         'https://api.spotinst.io/functions/environment/' +
@@ -46,7 +51,7 @@ export function init(
       token_obj: ITokenObj
     ): Promise<void> {
       return new Promise(function(resolve, reject) {
-        iGetAuthTokenResult = {
+        const iGetAuthTokenResult = {
           accesstoken: token_obj.access_token,
           expirytime: token_obj.expiry_time,
           refreshtoken: token_obj.refresh_token,
@@ -60,7 +65,7 @@ export function init(
       token_obj: ITokenObj
     ): Promise<void> {
       return new Promise(function(resolve, reject) {
-        iGetAuthTokenResult = {
+        const iGetAuthTokenResult = {
           accesstoken: token_obj.access_token,
           expirytime: token_obj.expiry_time,
           refreshtoken: token_obj.refresh_token,
@@ -71,7 +76,7 @@ export function init(
       });
     },
     getOAuthTokens: function getOAuthTokens(
-      user_identifier
+      user_identifier: string
     ): Promise<IGetAuthTokenResult[]> {
       return new Promise(function(resolve, reject) {
         _context.getDoc(oauthKey, function(err, res) {
