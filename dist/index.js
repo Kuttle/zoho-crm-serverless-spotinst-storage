@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var rp = require("request-promise");
-var iGetAuthTokenResult;
 var oauthKey = 'oauthKey';
 function init(context, account, token, environment) {
     var _context = context;
@@ -28,7 +27,7 @@ function init(context, account, token, environment) {
     return {
         saveOAuthTokens: function saveOAuthTokens(token_obj) {
             return new Promise(function (resolve, reject) {
-                iGetAuthTokenResult = {
+                var iGetAuthTokenResult = {
                     accesstoken: token_obj.access_token,
                     expirytime: token_obj.expiry_time,
                     refreshtoken: token_obj.refresh_token,
@@ -40,7 +39,7 @@ function init(context, account, token, environment) {
         },
         updateOAuthTokens: function updateOAuthTokens(token_obj) {
             return new Promise(function (resolve, reject) {
-                iGetAuthTokenResult = {
+                var iGetAuthTokenResult = {
                     accesstoken: token_obj.access_token,
                     expirytime: token_obj.expiry_time,
                     refreshtoken: token_obj.refresh_token,
