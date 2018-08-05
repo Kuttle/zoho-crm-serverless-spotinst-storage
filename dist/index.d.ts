@@ -13,8 +13,4 @@ export interface IStorage {
     updateOAuthTokens: (token_obj: ITokenObj) => Promise<void>;
     getOAuthTokens(user_identifier: string): Promise<IGetAuthTokenResult[]>;
 }
-export declare function init(context: any, account: string, token: string, environment: string): {
-    saveOAuthTokens: (token_obj: ITokenObj) => Promise<void>;
-    updateOAuthTokens: (token_obj: ITokenObj) => Promise<void>;
-    getOAuthTokens: (user_identifier: string) => Promise<IGetAuthTokenResult[]>;
-};
+export declare function init(context: any, account: string, token: string, environment: string): IStorage;

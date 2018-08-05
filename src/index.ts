@@ -23,7 +23,7 @@ export function init(
   account: string,
   token: string,
   environment: string
-) {
+): IStorage {
   const _context = context;
   function postStore(key: string, value: string): Promise<IStorage> {
     return rp({
@@ -46,7 +46,7 @@ export function init(
       json: true,
     });
   }
-  const returnObj = {
+  const returnObj: IStorage = {
     saveOAuthTokens: function saveOAuthTokens(
       token_obj: ITokenObj
     ): Promise<void> {
