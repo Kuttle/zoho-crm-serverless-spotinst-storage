@@ -24,7 +24,7 @@ function init(context, account, token, environment) {
             json: true,
         });
     }
-    return {
+    var returnObj = {
         saveOAuthTokens: function saveOAuthTokens(token_obj) {
             return new Promise(function (resolve, reject) {
                 var iGetAuthTokenResult = {
@@ -62,6 +62,8 @@ function init(context, account, token, environment) {
             });
         },
     };
+    console.log("about to print init: " + JSON.stringify(returnObj));
+    return returnObj;
 }
 exports.init = init;
 //# sourceMappingURL=index.js.map

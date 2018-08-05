@@ -46,7 +46,7 @@ export function init(
       json: true,
     });
   }
-  return {
+  const returnObj = {
     saveOAuthTokens: function saveOAuthTokens(
       token_obj: ITokenObj
     ): Promise<void> {
@@ -90,4 +90,6 @@ export function init(
       });
     },
   };
+  console.log(`about to print init: ${JSON.stringify(returnObj)}`);
+  return returnObj;
 }
