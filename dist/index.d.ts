@@ -8,6 +8,9 @@ export interface ITokenObj {
     expiry_time: number;
     refresh_token: string;
 }
-export declare function saveOAuthTokens(token_obj: ITokenObj): Promise<void>;
-export declare function updateOAuthTokens(token_obj: ITokenObj): Promise<void>;
-export declare function getOAuthTokens(user_identifier: any): Promise<IGetAuthTokenResult[]>;
+export interface IStorage {
+    saveOAuthTokens: (token_obj: ITokenObj) => Promise<void>;
+    updateOAuthTokens: (token_obj: ITokenObj) => Promise<void>;
+    getOAuthTokens(user_identifier: string): Promise<IGetAuthTokenResult[]>;
+}
+export declare function init(context: any, account: string, token: string, environment: string): IStorage;

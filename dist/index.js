@@ -1,47 +1,69 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-var iGetAuthTokenResult;
-function saveOAuthTokens(token_obj) {
-    return new Promise(function (resolve, reject) {
-        //iGetAuthTokenResult = accessTokenHack(token_obj);
-        iGetAuthTokenResult = {
-            accesstoken: token_obj.access_token,
-            expirytime: token_obj.expiry_time,
-            refreshtoken: token_obj.refresh_token,
-        };
-        resolve();
-    });
+var rp = require("request-promise");
+var oauthKey = 'oauthKey';
+function init(context, account, token, environment) {
+    var _context = context;
+    function postStore(key, value) {
+        return rp({
+            uri: 'https://api.spotinst.io/functions/environment/' +
+                environment +
+                '/userDocument',
+            method: 'POST',
+            qs: { accountId: account },
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token,
+            },
+            body: {
+                userDocument: {
+                    key: key,
+                    value: value,
+                },
+            },
+            json: true,
+        });
+    }
+    var returnObj = {
+        saveOAuthTokens: function saveOAuthTokens(token_obj) {
+            return new Promise(function (resolve, reject) {
+                var iGetAuthTokenResult = {
+                    accesstoken: token_obj.access_token,
+                    expirytime: token_obj.expiry_time,
+                    refreshtoken: token_obj.refresh_token,
+                };
+                postStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(function () {
+                    resolve();
+                });
+            });
+        },
+        updateOAuthTokens: function updateOAuthTokens(token_obj) {
+            return new Promise(function (resolve, reject) {
+                var iGetAuthTokenResult = {
+                    accesstoken: token_obj.access_token,
+                    expirytime: token_obj.expiry_time,
+                    refreshtoken: token_obj.refresh_token,
+                };
+                postStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(function () {
+                    resolve();
+                });
+            });
+        },
+        getOAuthTokens: function getOAuthTokens(user_identifier) {
+            return new Promise(function (resolve, reject) {
+                _context.getDoc(oauthKey, function (err, res) {
+                    if (res) {
+                        var result = JSON.parse(res);
+                        var result_array = [result];
+                        resolve(result_array);
+                    }
+                    reject(err);
+                });
+            });
+        },
+    };
+    console.log("about to print init: " + JSON.stringify(returnObj));
+    return returnObj;
 }
-exports.saveOAuthTokens = saveOAuthTokens;
-function updateOAuthTokens(token_obj) {
-    return new Promise(function (resolve, reject) {
-        //iGetAuthTokenResult = accessTokenHack(token_obj);
-        iGetAuthTokenResult = {
-            accesstoken: token_obj.access_token,
-            expirytime: token_obj.expiry_time,
-            refreshtoken: token_obj.refresh_token,
-        };
-        resolve();
-    });
-}
-exports.updateOAuthTokens = updateOAuthTokens;
-function getOAuthTokens(user_identifier) {
-    return new Promise(function (resolve, reject) {
-        var result = __assign({}, iGetAuthTokenResult);
-        var result_array = [result];
-        resolve(result_array);
-    });
-}
-exports.getOAuthTokens = getOAuthTokens;
+exports.init = init;
 //# sourceMappingURL=index.js.map
