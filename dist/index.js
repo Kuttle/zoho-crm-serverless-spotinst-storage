@@ -4,12 +4,12 @@ var rp = require("request-promise");
 var oauthKey = 'oauthKey';
 function init(context, account, token, environment) {
     var _context = context;
-    function postStore(key, value) {
+    function store(method, key, value) {
         return rp({
             uri: 'https://api.spotinst.io/functions/environment/' +
                 environment +
                 '/userDocument',
-            method: 'POST',
+            method: method,
             qs: { accountId: account },
             headers: {
                 'Content-Type': 'application/json',
@@ -23,6 +23,12 @@ function init(context, account, token, environment) {
             },
             json: true,
         });
+    }
+    function postStore(key, value) {
+        return store('POST', key, value);
+    }
+    function putStore(key, value) {
+        return store('PUT', key, value);
     }
     var returnObj = {
         saveOAuthTokens: function saveOAuthTokens(token_obj) {
@@ -44,7 +50,7 @@ function init(context, account, token, environment) {
                     expirytime: token_obj.expiry_time,
                     refreshtoken: token_obj.refresh_token,
                 };
-                postStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(function () {
+                putStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(function () {
                     resolve();
                 });
             });

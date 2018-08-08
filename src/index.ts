@@ -1,4 +1,5 @@
 import * as rp from 'request-promise';
+
 export interface IGetAuthTokenResult {
   accesstoken: string;
   expirytime: number;
@@ -25,13 +26,18 @@ export function init(
   environment: string
 ): IStorage {
   const _context = context;
-  function postStore(key: string, value: string): Promise<IStorage> {
+
+  function store(
+    method: string,
+    key: string,
+    value: string
+  ): Promise<IStorage> {
     return rp({
       uri:
         'https://api.spotinst.io/functions/environment/' +
         environment +
         '/userDocument',
-      method: 'POST',
+      method: method,
       qs: { accountId: account },
       headers: {
         'Content-Type': 'application/json',
@@ -46,6 +52,13 @@ export function init(
       json: true,
     });
   }
+  function postStore(key: string, value: string): Promise<IStorage> {
+    return store('POST', key, value);
+  }
+  function putStore(key: string, value: string): Promise<IStorage> {
+    return store('PUT', key, value);
+  }
+
   const returnObj: IStorage = {
     saveOAuthTokens: function saveOAuthTokens(
       token_obj: ITokenObj
@@ -70,7 +83,7 @@ export function init(
           expirytime: token_obj.expiry_time,
           refreshtoken: token_obj.refresh_token,
         };
-        postStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(() => {
+        putStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(() => {
           resolve();
         });
       });
