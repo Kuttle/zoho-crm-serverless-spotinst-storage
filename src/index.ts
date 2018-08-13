@@ -69,7 +69,8 @@ export function init(
           expirytime: token_obj.expiry_time,
           refreshtoken: token_obj.refresh_token,
         };
-        postStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(() => {
+        //postStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(() => { // commenting out for now as for some reason
+        putStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(() => {
           resolve();
         });
       });

@@ -38,7 +38,8 @@ function init(context, account, token, environment) {
                     expirytime: token_obj.expiry_time,
                     refreshtoken: token_obj.refresh_token,
                 };
-                postStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(function () {
+                //postStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(() => { // commenting out for now as for some reason
+                putStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(function () {
                     resolve();
                 });
             });
