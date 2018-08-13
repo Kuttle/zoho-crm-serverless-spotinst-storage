@@ -27,17 +27,10 @@ export function init(
 ): IStorage {
   const _context = context;
 
-  function store(
-    method: string,
-    key: string,
-    value: string
-  ): Promise<IStorage> {
-    return rp({
-      uri:
-        'https://api.spotinst.io/functions/environment/' +
-        environment +
-        '/userDocument',
-      method: method,
+  function postStore(key: string, value: string): Promise<IStorage> {
+    const payload = {
+      uri: `https://api.spotinst.io/functions/environment/${environment}/userDocument`,
+      method: 'POST',
       qs: { accountId: account },
       headers: {
         'Content-Type': 'application/json',
@@ -45,18 +38,37 @@ export function init(
       },
       body: {
         userDocument: {
-          key: key,
-          value: value,
+          key,
+          value,
         },
       },
       json: true,
-    });
-  }
-  function postStore(key: string, value: string): Promise<IStorage> {
-    return store('POST', key, value);
+    };
+    console.log('POST payload...');
+    console.log(JSON.stringify(payload));
+    return rp(payload);
   }
   function putStore(key: string, value: string): Promise<IStorage> {
-    return store('PUT', key, value);
+    const payload = {
+      uri: `https://api.spotinst.io/functions/environment/${environment}/userDocument/${key}`,
+      method: 'PUT',
+      qs: {
+        accountId: account,
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+      body: {
+        userDocument: {
+          value,
+        },
+      },
+      json: true,
+    };
+    console.log('PUT payload...');
+    console.log(JSON.stringify(payload));
+    return rp(payload);
   }
 
   const returnObj: IStorage = {

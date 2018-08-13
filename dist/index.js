@@ -4,12 +4,10 @@ var rp = require("request-promise");
 var oauthKey = 'oauthKey';
 function init(context, account, token, environment) {
     var _context = context;
-    function store(method, key, value) {
-        return rp({
-            uri: 'https://api.spotinst.io/functions/environment/' +
-                environment +
-                '/userDocument',
-            method: method,
+    function postStore(key, value) {
+        var payload = {
+            uri: "https://api.spotinst.io/functions/environment/" + environment + "/userDocument",
+            method: 'POST',
             qs: { accountId: account },
             headers: {
                 'Content-Type': 'application/json',
@@ -22,13 +20,32 @@ function init(context, account, token, environment) {
                 },
             },
             json: true,
-        });
-    }
-    function postStore(key, value) {
-        return store('POST', key, value);
+        };
+        console.log('POST payload...');
+        console.log(JSON.stringify(payload));
+        return rp(payload);
     }
     function putStore(key, value) {
-        return store('PUT', key, value);
+        var payload = {
+            uri: "https://api.spotinst.io/functions/environment/" + environment + "/userDocument/" + key,
+            method: 'PUT',
+            qs: {
+                accountId: account,
+            },
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token,
+            },
+            body: {
+                userDocument: {
+                    value: value,
+                },
+            },
+            json: true,
+        };
+        console.log('PUT payload...');
+        console.log(JSON.stringify(payload));
+        return rp(payload);
     }
     var returnObj = {
         saveOAuthTokens: function saveOAuthTokens(token_obj) {
