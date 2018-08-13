@@ -63,14 +63,19 @@ export function init(
     saveOAuthTokens: function saveOAuthTokens(
       token_obj: ITokenObj
     ): Promise<void> {
+      console.log(`saveOAuthTokens: token_obj:${JSON.stringify(token_obj)}`);
       return new Promise(function(resolve, reject) {
         const iGetAuthTokenResult = {
           accesstoken: token_obj.access_token,
           expirytime: token_obj.expiry_time,
           refreshtoken: token_obj.refresh_token,
         };
-        //postStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(() => { // commenting out for now as for some reason
-        putStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(() => {
+        console.log(
+          `saveOAuthTokens: iGetAuthTokenResult:${JSON.stringify(
+            iGetAuthTokenResult
+          )}`
+        );
+        postStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(() => {
           resolve();
         });
       });
@@ -78,12 +83,18 @@ export function init(
     updateOAuthTokens: function updateOAuthTokens(
       token_obj: ITokenObj
     ): Promise<void> {
+      console.log(`updateOAuthTokens: token_obj:${JSON.stringify(token_obj)}`);
       return new Promise(function(resolve, reject) {
         const iGetAuthTokenResult = {
           accesstoken: token_obj.access_token,
           expirytime: token_obj.expiry_time,
           refreshtoken: token_obj.refresh_token,
         };
+        console.log(
+          `updateOAuthTokens: iGetAuthTokenResult:${JSON.stringify(
+            iGetAuthTokenResult
+          )}`
+        );
         putStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(() => {
           resolve();
         });
@@ -93,6 +104,7 @@ export function init(
       user_identifier: string
     ): Promise<IGetAuthTokenResult[]> {
       return new Promise(function(resolve, reject) {
+        console.log(`getOAuthTokens...`);
         _context.getDoc(oauthKey, function(err, res) {
           if (res) {
             const result: IGetAuthTokenResult = JSON.parse(res);

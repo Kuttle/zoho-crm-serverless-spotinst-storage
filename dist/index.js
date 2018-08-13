@@ -32,25 +32,28 @@ function init(context, account, token, environment) {
     }
     var returnObj = {
         saveOAuthTokens: function saveOAuthTokens(token_obj) {
+            console.log("saveOAuthTokens: token_obj:" + JSON.stringify(token_obj));
             return new Promise(function (resolve, reject) {
                 var iGetAuthTokenResult = {
                     accesstoken: token_obj.access_token,
                     expirytime: token_obj.expiry_time,
                     refreshtoken: token_obj.refresh_token,
                 };
-                //postStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(() => { // commenting out for now as for some reason
-                putStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(function () {
+                console.log("saveOAuthTokens: iGetAuthTokenResult:" + JSON.stringify(iGetAuthTokenResult));
+                postStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(function () {
                     resolve();
                 });
             });
         },
         updateOAuthTokens: function updateOAuthTokens(token_obj) {
+            console.log("updateOAuthTokens: token_obj:" + JSON.stringify(token_obj));
             return new Promise(function (resolve, reject) {
                 var iGetAuthTokenResult = {
                     accesstoken: token_obj.access_token,
                     expirytime: token_obj.expiry_time,
                     refreshtoken: token_obj.refresh_token,
                 };
+                console.log("updateOAuthTokens: iGetAuthTokenResult:" + JSON.stringify(iGetAuthTokenResult));
                 putStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(function () {
                     resolve();
                 });
@@ -58,6 +61,7 @@ function init(context, account, token, environment) {
         },
         getOAuthTokens: function getOAuthTokens(user_identifier) {
             return new Promise(function (resolve, reject) {
+                console.log("getOAuthTokens...");
                 _context.getDoc(oauthKey, function (err, res) {
                     if (res) {
                         var result = JSON.parse(res);
