@@ -65,14 +65,17 @@ function init(context, account, token, environment) {
         updateOAuthTokens: function updateOAuthTokens(token_obj) {
             console.log("updateOAuthTokens: token_obj:" + JSON.stringify(token_obj));
             return new Promise(function (resolve, reject) {
-                var iGetAuthTokenResult = {
-                    accesstoken: token_obj.access_token,
-                    expirytime: token_obj.expiry_time,
-                    refreshtoken: token_obj.refresh_token,
-                };
-                console.log("updateOAuthTokens: iGetAuthTokenResult:" + JSON.stringify(iGetAuthTokenResult));
-                putStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(function () {
-                    resolve();
+                returnObj
+                    .getOAuthTokens('')
+                    .then(function (_a) {
+                    var storedAuth = _a[0];
+                    console.log("updateOAuthTokens: storedAuth:" + JSON.stringify(storedAuth));
+                    storedAuth.expirytime = token_obj.expiry_time;
+                    storedAuth.accesstoken = token_obj.access_token;
+                    console.log("updateOAuthTokens: storedAuthCombined:" + JSON.stringify(storedAuth));
+                    return putStore(oauthKey, JSON.stringify(storedAuth)).then(function () {
+                        return resolve();
+                    });
                 });
             });
         },

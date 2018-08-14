@@ -1,4 +1,5 @@
 import * as rp from 'request-promise';
+import { resolve } from 'dns';
 
 export interface IGetAuthTokenResult {
   accesstoken: string;
@@ -97,19 +98,23 @@ export function init(
     ): Promise<void> {
       console.log(`updateOAuthTokens: token_obj:${JSON.stringify(token_obj)}`);
       return new Promise(function(resolve, reject) {
-        const iGetAuthTokenResult = {
-          accesstoken: token_obj.access_token,
-          expirytime: token_obj.expiry_time,
-          refreshtoken: token_obj.refresh_token,
-        };
-        console.log(
-          `updateOAuthTokens: iGetAuthTokenResult:${JSON.stringify(
-            iGetAuthTokenResult
-          )}`
-        );
-        putStore(oauthKey, JSON.stringify(iGetAuthTokenResult)).then(() => {
-          resolve();
-        });
+        returnObj
+          .getOAuthTokens('')
+          .then(([storedAuth]: IGetAuthTokenResult[]) => {
+            console.log(
+              `updateOAuthTokens: storedAuth:${JSON.stringify(storedAuth)}`
+            );
+            storedAuth.expirytime = token_obj.expiry_time;
+            storedAuth.accesstoken = token_obj.access_token;
+            console.log(
+              `updateOAuthTokens: storedAuthCombined:${JSON.stringify(
+                storedAuth
+              )}`
+            );
+            return putStore(oauthKey, JSON.stringify(storedAuth)).then(() =>
+              resolve()
+            );
+          });
       });
     },
     getOAuthTokens: function getOAuthTokens(
